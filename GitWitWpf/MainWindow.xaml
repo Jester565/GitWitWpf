@@ -1,0 +1,19 @@
+﻿<Window x:Class="GitWitWpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GitWitWpf"
+        mc:Ignorable="d"
+        Title="MainWindow" 
+				Height="{Binding CustomHeight, Mode=OneWay}" 
+				Width="{Binding CustomWidth, Mode=OneWay}" 
+				Left="0" Top="0"
+				AllowsTransparency="True" WindowStyle="None" Loaded="Window_Loaded">
+	<Window.Background>
+		<SolidColorBrush Opacity="0.5" Color="Black"/>
+	</Window.Background>
+	<Grid Height="18">
+		<TextBox Grid.Row="0" Text="{Binding BoundNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+	</Grid>
+</Window>
