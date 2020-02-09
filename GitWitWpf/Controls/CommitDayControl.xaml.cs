@@ -26,7 +26,7 @@ namespace GitWitWpf.Controls
 
 				c.R = 0; 
 				c.G = (byte)((int)((255 - MIN_G_VAL) * Math.Ceiling(((double)numShownCommits) / COMMIT_INCR) / MAX_COMMIT_SHOWN + MIN_G_VAL));
-				c.B = 0; c.A = 100;
+				c.B = 0; c.A = 200;
 				return new SolidColorBrush(c);
 			}
 		}

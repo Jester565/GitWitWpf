@@ -10,6 +10,25 @@
 		<local:CommitsToColorConverter x:Key="commitconverter"></local:CommitsToColorConverter>
 	</Control.Resources>
 	<Grid>
-		<Rectangle Width="30" Height="30" Stroke="LightGray" StrokeThickness="1" Fill="{Binding Path=Commits.Count, Converter={StaticResource commitconverter}}"  />
+		<Border 
+			Width="30"
+			Height="30" 
+			Background="{Binding Path=Commits.Count, Converter={StaticResource commitconverter}}" 
+      BorderBrush="Black" 
+      BorderThickness="1"
+			ToolTip="{Binding Summary, Mode=OneWay}">
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Label, Mode=OneWay}" Foreground="White">
+				<TextBlock.Style>
+					<Style TargetType="{x:Type TextBlock}">
+						<Setter Property="Visibility" Value="Hidden" />
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type Border}},Path=IsMouseOver}" Value="True">
+								<Setter Property="Visibility" Value="Visible" />
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</TextBlock.Style>
+			</TextBlock>
+		</Border>
 	</Grid>
 </UserControl>

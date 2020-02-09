@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -14,6 +15,29 @@ namespace GitWitWpf.Models
         public class CommitDay
         {
             private List<CommitData> _commits = new List<CommitData>();
+            public string Summary
+            {
+                get {
+                    string summary = "";
+                    foreach (var it in _commits.Select((x, i) => new { Value = x, Index = i }))
+                    {
+                        CommitData commit = it.Value;
+                        summary += commit.DateTime.ToString("HH:mm");
+                        summary += " - ";
+                        summary += commit.Msg;
+                        if (it.Index < _commits.Count - 1)
+                        {
+                            summary += "\n\n";
+                        }
+                    }
+                    return summary;
+                }
+            }
+
+            public string Label
+            {
+                get { return Date.ToString("M/d"); }
+            }
             public DateTime Date { get; set; }
             public List<CommitData> Commits
             {
@@ -23,6 +47,10 @@ namespace GitWitWpf.Models
         }
         public class CommitWeek
         {
+            public string Label
+            {
+                get { return StartDate.ToString("M/d"); }
+            }
             public DateTime StartDate { get; set; }
             public List<CommitDay> Days { get; set; }
         }
@@ -32,6 +60,7 @@ namespace GitWitWpf.Models
         //Refresh git calendar every 10 minutes
         private const int DEFAULT_REFERSH_INTERVAL = 60 * 10;
         private Timer _pollTimer = new Timer();
+        private static readonly List<string> DOW_LABELS = new List<string> { "U", "M", "T", "W", "R", "F", "S" };
         public CommitCalendarModel(SettingsModel settingsModel)
         {
             _settingsModel = settingsModel;
@@ -50,6 +79,11 @@ namespace GitWitWpf.Models
             _pollTimer.Elapsed += new ElapsedEventHandler(this.OnPoll);
             _ = Refresh();
             StartPolling();
+        }
+
+        public List<string> DowLabels
+        {
+            get { return DOW_LABELS; }
         }
 
         public List<CommitWeek> Weeks
@@ -116,11 +150,14 @@ namespace GitWitWpf.Models
             }
             foreach (CommitData commit in commits)
             {
-                int dayDiff = (int)(latestWeekStart.Date - commit.DateTime.Date).TotalDays;
-                int weeksOff = dayDiff / 7;
-                int weekI = numWeeks - weeksOff - 1;
+                int dayDiff = (int)(latestWeekStart.Date - commit.DateTime.Date).TotalDays + 7;
+                int weeksOff = (int)Math.Ceiling(dayDiff / 7.0);
+                int weekI = numWeeks - weeksOff;
                 int dayI = (int)commit.DateTime.DayOfWeek;
-                commitWeeks[weekI].Days[dayI].Commits.Add(commit);
+                if (weekI >= 0)
+                {
+                    commitWeeks[weekI].Days[dayI].Commits.Add(commit);
+                }
             }
             return commitWeeks;
         }

@@ -93,6 +93,7 @@ namespace GitWitWpf.Models
                 {
                     _settings.NumWeeks = (int)value;
                     OnPropertyChanged("NumWeeks");
+                    _ = WriteSettings();
                 }
             }
         }
@@ -109,6 +110,7 @@ namespace GitWitWpf.Models
                 {
                     _settings.Username = value;
                     OnPropertyChanged("Username");
+                    _ = WriteSettings();
                 }
             }
         }
@@ -124,6 +126,7 @@ namespace GitWitWpf.Models
                 {
                     _settings.AccessToken = value;
                     OnPropertyChanged("AccessToken");
+                    _ = WriteSettings();
                 }
             }
         }
