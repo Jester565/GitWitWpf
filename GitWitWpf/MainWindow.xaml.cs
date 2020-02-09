@@ -34,13 +34,20 @@ namespace GitWitWpf
         private static readonly int INIT_WIDTH = 200;
         private static readonly int INIT_HEIGHT = 300;
         private static readonly ScreenPosition DEFAULT_WINDOW_POSITION = ScreenPosition.TopRight;
-        private SettingsModel settingsModel;
+        private SettingsModel _settingsModel;
+        private CommitCalendarModel _commitCalendarModel;
 
         public MainWindow()
         {
             this.DataContext = this;
-            settingsModel = new SettingsModel();
+            _settingsModel = new SettingsModel();
+            _commitCalendarModel = new CommitCalendarModel(_settingsModel);
             InitializeComponent();
+        }
+
+        public CommitCalendarModel CommitCalendar
+        {
+            get { return _commitCalendarModel;  }
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -52,19 +59,14 @@ namespace GitWitWpf
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            settingsModel.PropertyChanged += this.onSettingsChanged;
-            await settingsModel.Init();
+            _settingsModel.PropertyChanged += this.OnSettingsChanged;
+            await _settingsModel.Init();
             SystemEvents.DisplaySettingsChanged += new
             EventHandler(this.OnDisplayChange);
-            //Temporary test of 
-            await Task.Run(async () =>
-            {
-                await Task.Delay(5000);
-            });
-            settingsModel.WindowPosition = ScreenPosition.TopLeft;
+            _commitCalendarModel.Init();
         }
 
-        private void onSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             //If WindowPosition changed, reset windowposition
             if (e.PropertyName == "WindowPosition")
@@ -105,6 +107,11 @@ namespace GitWitWpf
             }
         }
 
+        public SettingsModel Settings
+        {
+            get { return _settingsModel; }
+        }
+
         private void OnDisplayChange(object sender, EventArgs e)
         {
             this.SetWindowPosition();
@@ -112,7 +119,7 @@ namespace GitWitWpf
 
         private void SetWindowPosition()
         {
-            ScreenPosition windowPosition = (settingsModel.WindowPosition != null) ? (ScreenPosition)settingsModel.WindowPosition : DEFAULT_WINDOW_POSITION;
+            ScreenPosition windowPosition = (_settingsModel.WindowPosition != null) ? (ScreenPosition)_settingsModel.WindowPosition : DEFAULT_WINDOW_POSITION;
             int screenWidth = (int)SystemParameters.WorkArea.Width;
             int screenHeight = (int)SystemParameters.WorkArea.Height;
             this.Top = (

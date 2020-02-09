@@ -4,7 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GitWitWpf"
-        mc:Ignorable="d"
+				xmlns:controls="clr-namespace:GitWitWpf.Controls"
+				mc:Ignorable="d"
         Title="MainWindow" 
 				Height="{Binding CustomHeight, Mode=OneWay}" 
 				Width="{Binding CustomWidth, Mode=OneWay}" 
@@ -13,7 +14,7 @@
 	<Window.Background>
 		<SolidColorBrush Opacity="0.5" Color="Black"/>
 	</Window.Background>
-	<Grid Height="18">
-		<TextBox Grid.Row="0" Text="{Binding BoundNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+	<Grid>
+		<controls:CommitCalendarControl DataContext="{Binding CommitCalendar}"></controls:CommitCalendarControl>
 	</Grid>
 </Window>

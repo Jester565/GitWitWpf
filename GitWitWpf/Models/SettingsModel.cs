@@ -1,5 +1,4 @@
-﻿using GitWitWpf.Services;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,8 +7,17 @@ using System.Threading.Tasks;
 
 namespace GitWitWpf.Models
 {
-    class SettingsModel: ObservableObject
+    public class SettingsModel: ObservableObject
     {
+        private static SettingsModel _instance = null;
+        public static SettingsModel GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new SettingsModel();
+            }
+            return _instance;
+        }
 
         public enum ScreenPosition : ushort
         {
