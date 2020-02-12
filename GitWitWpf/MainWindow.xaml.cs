@@ -151,5 +151,12 @@ namespace GitWitWpf
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.DataContext = _settingsModel;
+            settingsWindow.ShowDialog();
+        }
     }
 }

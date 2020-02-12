@@ -14,7 +14,11 @@
 	<Window.Background>
 		<SolidColorBrush Opacity="0.5" Color="Black"/>
 	</Window.Background>
+	<Window.Resources>
+		<Image x:Key="SettingsImg" Source="Resources/settings.png"/>
+	</Window.Resources>
 	<Grid>
+		<Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource SettingsImg}" Background="#33000000" Width="20" Height="20" BorderThickness="0" Click="Settings_Click" />
 		<controls:CommitCalendarControl DataContext="{Binding CommitCalendar}"></controls:CommitCalendarControl>
 	</Grid>
 </Window>

@@ -22,5 +22,12 @@ namespace GitWitWpf.Controls
         {
             InitializeComponent();
         }
+
+        private void Set_AccessToken(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
+
+    
 }
