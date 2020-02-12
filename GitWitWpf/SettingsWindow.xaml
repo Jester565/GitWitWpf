@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:GitWitWpf"
 				xmlns:controls="clr-namespace:GitWitWpf.Controls"
 				mc:Ignorable="d"
-        Title="SettingsWindow" Height="auto" Width="auto"
+        Title="SettingsWindow" Height="auto" Width="500"
 				AllowsTransparency="True" WindowStyle="None" >
 	<Window.Background>
 		<SolidColorBrush Opacity="0.5" Color="Black"/>
@@ -14,11 +14,20 @@
 	<Window.Resources>
 		<Image x:Key="CloseImg" Source="Resources/close.png"/>
 	</Window.Resources>
-	<Grid>
-		<Button Width="20" Height="20" Background="#33000000" BorderThickness="0" Content="{StaticResource SettingsImg}" Click="Close_Click"></Button>
-		<StackPanel>
-			<controls:SettingsControl Margin="10, 10, 10, 30" />
-			<controls:AuthControl Margin="10, 10, 10, 30" />
-		</StackPanel>
-	</Grid>
+	<StackPanel>
+		<Grid>
+			<TextBlock Foreground="White" FontSize="25">Settings</TextBlock>
+			<Button 
+				Width="30" Height="30" Background="#33000000" BorderThickness="0" 
+				Content="{StaticResource CloseImg}" Click="Close_Click"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Top" />
+		</Grid>
+		<ScrollViewer MaxHeight="600">
+			<StackPanel>
+				<controls:SettingsControl Margin="10, 10, 10, 30" />
+				<controls:AuthControl Margin="10, 10, 10, 30" />
+			</StackPanel>
+		</ScrollViewer>
+	</StackPanel>
 </Window>

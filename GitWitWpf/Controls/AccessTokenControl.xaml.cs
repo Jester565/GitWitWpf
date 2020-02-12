@@ -14,18 +14,19 @@ using System.Windows.Shapes;
 namespace GitWitWpf.Controls
 {
     /// <summary>
-    /// Interaction logic for SettingsControl.xaml
+    /// Interaction logic for AccessTokenControl.xaml
     /// </summary>
-    public partial class SettingsControl : UserControl
+    public partial class AccessTokenControl : UserControl
     {
-        public SettingsControl()
+        private static readonly string HELP_URL = "https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line";
+        public AccessTokenControl()
         {
             InitializeComponent();
         }
 
-        private void Exit_Click(object sender, RoutedEventArgs e)
+        private void Help_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Application.Current.Shutdown();
+            System.Diagnostics.Process.Start(HELP_URL);
         }
     }
 }

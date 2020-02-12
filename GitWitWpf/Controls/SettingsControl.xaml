@@ -4,13 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GitWitWpf.Controls"
-             mc:Ignorable="d" 
-						 d:DesignWidth="300">
+             mc:Ignorable="d">
 	<StackPanel>
-		<TextBlock Foreground="White">Settings</TextBlock>
 		<Label Margin="0"
       Content="Window Position"
       Padding="5,5,5,1"
+			Foreground="White"
       Target="{Binding ElementName=windowPositionComboBox}" />
 		<ComboBox
 			Name="windowPositionComboBox"
@@ -18,9 +17,21 @@
 			DisplayMemberPath="Value"
 			SelectedValuePath="Key"
 			SelectedValue="{Binding WindowPosition, Mode=TwoWay}" />
-		<ComboBox ItemsSource="{Binding AllWeekCounts, Mode=OneWay}"
+		<Label Margin="0"
+      Content="# Weeks"
+      Padding="5,5,5,1"
+			Foreground="White"
+      Target="{Binding ElementName=numWeeksComboBox}" />
+		<ComboBox 
+			Name="numWeeksComboBox"
+			ItemsSource="{Binding AllWeekCounts, Mode=OneWay}"
 			DisplayMemberPath="Key"
 			SelectedValuePath="Value"
 			SelectedValue="{Binding NumWeeks, Mode=TwoWay}" />
+		<Button 
+				Background="#33000000" BorderThickness="1" 
+				Click="Exit_Click"
+				HorizontalAlignment="Center"
+				Content="Exit" />
 	</StackPanel>
 </UserControl>
