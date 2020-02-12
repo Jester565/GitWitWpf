@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace GitWitWpf.Models
 {
@@ -45,6 +46,8 @@ namespace GitWitWpf.Models
         private static readonly string SETTINGS_PATH = @".\settings.json";
         private static readonly ScreenPosition DEFAULT_WINDOW_POSITION = ScreenPosition.TopRight;
         private static readonly int DEFAULT_NUM_WEEKS = 4;
+        private static int MAX_WEEKS = 10;
+        private static int MIN_WEEKS = 1;
         public SettingsModel()
         {
         }
@@ -63,6 +66,14 @@ namespace GitWitWpf.Models
 
         public async Task WriteSettings() {
             await File.WriteAllTextAsync(SETTINGS_PATH, JsonConvert.SerializeObject(_settings));
+        }
+
+        public List<KeyValuePair<ScreenPosition, string>> AllScreenPositions
+        {
+            get
+            {
+                return ScreenPositionNames.ToList();
+            }
         }
 
         public ScreenPosition? WindowPosition
@@ -95,6 +106,19 @@ namespace GitWitWpf.Models
                     OnPropertyChanged("NumWeeks");
                     _ = WriteSettings();
                 }
+            }
+        }
+
+        public List<KeyValuePair<string, int>> AllWeekCounts
+        {
+            get
+            {
+                List<KeyValuePair<string, int>> WeekCounts = new List<KeyValuePair<string, int>>();
+                for (int i = MIN_WEEKS; i <= MAX_WEEKS; i++)
+                {
+                    WeekCounts.Add(new KeyValuePair<string, int>(i.ToString(), i));
+                }
+                return WeekCounts;
             }
         }
 

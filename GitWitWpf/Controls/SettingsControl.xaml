@@ -5,16 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GitWitWpf.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+						 d:DesignWidth="300">
 	<StackPanel>
 		<TextBlock Foreground="White">Settings</TextBlock>
+		<Label Margin="0"
+      Content="Window Position"
+      Padding="5,5,5,1"
+      Target="{Binding ElementName=windowPositionComboBox}" />
 		<ComboBox
-			ItemsSource="{Binding ScreenPositionPairs, Mode=OneWay}"
+			Name="windowPositionComboBox"
+			ItemsSource="{Binding AllScreenPositions, Mode=OneWay}"
 			DisplayMemberPath="Value"
 			SelectedValuePath="Key"
 			SelectedValue="{Binding WindowPosition, Mode=TwoWay}" />
-		<ComboBox ItemsSource="{Binding PossibleWeeks, Mode=OneWay}"
-			DisplayMemberPath="Name"
+		<ComboBox ItemsSource="{Binding AllWeekCounts, Mode=OneWay}"
+			DisplayMemberPath="Key"
 			SelectedValuePath="Value"
 			SelectedValue="{Binding NumWeeks, Mode=TwoWay}" />
 	</StackPanel>
