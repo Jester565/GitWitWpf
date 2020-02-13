@@ -1,7 +1,9 @@
 ﻿using GitWitWpf.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -57,6 +59,7 @@ namespace GitWitWpf.Models
             public DateTime StartDate { get; set; }
             public List<CommitDay> Days { get; set; }
         }
+        private static readonly string PREV_DATA_PATH = @".\weeks.json";
         private SettingsModel _settingsModel;
         private GitService _gitService;
         private List<CommitWeek> _weeks;
@@ -85,6 +88,7 @@ namespace GitWitWpf.Models
             }
             _pollTimer.AutoReset = true;
             _pollTimer.Elapsed += new ElapsedEventHandler(this.OnPoll);
+            _ = LoadPreviousData();
             _ = Refresh();
             StartPolling();
         }
@@ -161,6 +165,21 @@ namespace GitWitWpf.Models
             }
         }
 
+        private async Task LoadPreviousData()
+        {
+            if (File.Exists(PREV_DATA_PATH))
+            {
+                string weeksStr = await File.ReadAllTextAsync(PREV_DATA_PATH);
+                Weeks = JsonConvert.DeserializeObject<List<CommitWeek>>(weeksStr);
+            }
+        }
+
+        private async Task WriteData(List<CommitWeek> commitWeeks)
+        {
+            string weeksStr = JsonConvert.SerializeObject(commitWeeks);
+            await File.WriteAllTextAsync(PREV_DATA_PATH, weeksStr);
+        }
+
         public void StartPolling(int refreshInterval = DEFAULT_REFERSH_INTERVAL)
         {
             _pollTimer.Interval = 1000 * refreshInterval; // in miliseconds
@@ -189,6 +208,7 @@ namespace GitWitWpf.Models
                 try
                 {
                     Weeks = await _GetData(_cancelSource.Token);
+                    _ = WriteData(Weeks);
                     Loading = false;
                     ShowRefresh = true;
                 }

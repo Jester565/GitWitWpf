@@ -54,7 +54,7 @@ namespace GitWitWpf.Models
 
         public async Task Init()
         {
-            if (File.Exists(@".\settings.json"))
+            if (File.Exists(SETTINGS_PATH))
             {
                 string settingsStr = await File.ReadAllTextAsync(SETTINGS_PATH);
                 _settings = JsonConvert.DeserializeObject<Settings>(settingsStr);
