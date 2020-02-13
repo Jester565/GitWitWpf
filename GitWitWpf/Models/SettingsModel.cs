@@ -122,22 +122,6 @@ namespace GitWitWpf.Models
             }
         }
 
-        public string Username
-        {
-            get
-            {
-                return (_settings != null) ? _settings.Username : null;
-            }
-            set
-            {
-                if (_settings != null && value != null && value != _settings.Username)
-                {
-                    _settings.Username = value;
-                    OnPropertyChanged("Username");
-                    _ = WriteSettings();
-                }
-            }
-        }
         public string AccessToken
         {
             get

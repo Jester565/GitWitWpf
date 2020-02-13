@@ -3,12 +3,26 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GitWitWpf.Services
 {
     public class GitService
     {
+        //Workaround for no statuscode in the exception
+        private static HttpResponseMessage EnsureSuccessStatusCodeWithStatus(HttpResponseMessage httpResponseMessage)
+        {
+            try
+            {
+                return httpResponseMessage.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                ex.Data["StatusCode"] = httpResponseMessage.StatusCode;
+                throw;
+            }
+        }
         public struct CommitData
         {
             public string Author;
@@ -20,17 +34,26 @@ namespace GitWitWpf.Services
         private HttpClient _client = new HttpClient();
         public GitService()
         {
+            _client.BaseAddress = new Uri("https://api.github.com");
+            _client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("GitWit", "1.0"));
+            _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         public void SetHttpClient(string accessToken)
         {
-            _client.BaseAddress = new Uri("https://api.github.com");
-            _client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("GitWit", "1.0"));
-            _client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             if (accessToken != null)
             {
                 _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Token", accessToken);
             }
+        }
+
+        public async Task<string> GetUsername(CancellationToken ct)
+        {
+            HttpResponseMessage response = await _client.GetAsync("user", ct);
+            EnsureSuccessStatusCodeWithStatus(response);
+            string userStr = await response.Content.ReadAsStringAsync();
+            dynamic user = JsonConvert.DeserializeObject(userStr, new JsonSerializerSettings() { DateParseHandling = DateParseHandling.None });
+            return user.login;
         }
 
         private DateTime GetDayOfWeek(DateTime dt, DayOfWeek startOfWeek)
@@ -39,11 +62,11 @@ namespace GitWitWpf.Services
             return dt.AddDays(-1 * diff).Date;
         }
 
-        public async Task<List<CommitData>> GetRecentCommits(string username, DateTime startDateTime)
+        public async Task<List<CommitData>> GetRecentCommits(string username, DateTime startDateTime, CancellationToken ct)
         {
             List<CommitData> commits = new List<CommitData>();
-            HttpResponseMessage response = await _client.GetAsync($"users/{username}/events");
-            response.EnsureSuccessStatusCode();
+            HttpResponseMessage response = await _client.GetAsync($"users/{username}/events", ct);
+            EnsureSuccessStatusCodeWithStatus(response);
             string eventsStr = await response.Content.ReadAsStringAsync();
             dynamic events = JsonConvert.DeserializeObject(eventsStr, new JsonSerializerSettings() { DateParseHandling = DateParseHandling.None });
 
@@ -59,17 +82,17 @@ namespace GitWitWpf.Services
                 {
                     foreach (dynamic commit in evt.payload.commits)
                     {
-                        commits.Add(await GetCommit((string)evt.repo.url, (string)commit.sha));
+                        commits.Add(await GetCommit((string)evt.repo.url, (string)commit.sha, ct));
                     }
                 }
             }
             return commits;
         }
 
-        private async Task<CommitData> GetCommit(string repoUrl, string sha)
+        private async Task<CommitData> GetCommit(string repoUrl, string sha, CancellationToken ct)
         {
-            HttpResponseMessage response = await _client.GetAsync($"{repoUrl}/commits/{sha}");
-            response.EnsureSuccessStatusCode();
+            HttpResponseMessage response = await _client.GetAsync($"{repoUrl}/commits/{sha}", ct);
+            EnsureSuccessStatusCodeWithStatus(response);
             string commitStr = await response.Content.ReadAsStringAsync();
             dynamic commit = ((dynamic)JsonConvert.DeserializeObject(commitStr));
             return new CommitData

@@ -3,7 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using static GitWitWpf.Services.GitService;
@@ -57,9 +60,14 @@ namespace GitWitWpf.Models
         private SettingsModel _settingsModel;
         private GitService _gitService;
         private List<CommitWeek> _weeks;
+        private bool _loading = false;
+        private bool _showRefresh = false;
+        private string _errorMsg = null;
+        private bool _isAccessTokenError = false;
+        private CancellationTokenSource _cancelSource = null;
         //Refresh git calendar every 10 minutes
         private const int DEFAULT_REFERSH_INTERVAL = 60 * 10;
-        private Timer _pollTimer = new Timer();
+        private System.Timers.Timer _pollTimer = new System.Timers.Timer();
         private static readonly List<string> DOW_LABELS = new List<string> { "U", "M", "T", "W", "R", "F", "S" };
         public CommitCalendarModel(SettingsModel settingsModel)
         {
@@ -79,6 +87,11 @@ namespace GitWitWpf.Models
             _pollTimer.Elapsed += new ElapsedEventHandler(this.OnPoll);
             _ = Refresh();
             StartPolling();
+        }
+
+        public SettingsModel Settings
+        {
+            get { return _settingsModel; }
         }
 
         public List<string> DowLabels
@@ -102,6 +115,52 @@ namespace GitWitWpf.Models
             }
         }
 
+        public bool Loading
+        {
+            get
+            {
+                return _loading;
+            }
+            set
+            {
+                _loading = value;
+                OnPropertyChanged("Loading");
+            }
+        }
+
+        public bool ShowRefresh
+        {
+            get { return _showRefresh; }
+            set
+            {
+                _showRefresh = value;
+                OnPropertyChanged("ShowRefresh");
+            }
+        }
+
+        public bool IsAccessTokenError
+        {
+            get { return _isAccessTokenError; }
+            set
+            {
+                _isAccessTokenError = value;
+                OnPropertyChanged("IsAccessTokenError");
+            }
+        }
+
+        public string ErrorMsg
+        {
+            get
+            {
+                return _errorMsg;
+            }
+            set
+            {
+                _errorMsg = value;
+                OnPropertyChanged("ErrorMsg");
+            }
+        }
+
         public void StartPolling(int refreshInterval = DEFAULT_REFERSH_INTERVAL)
         {
             _pollTimer.Interval = 1000 * refreshInterval; // in miliseconds
@@ -115,14 +174,55 @@ namespace GitWitWpf.Models
 
         public async Task Refresh()
         {
-            if (_settingsModel.NumWeeks != null && _settingsModel.Username != null) {
-                int numWeeks = (int)_settingsModel.NumWeeks;
-                DateTime startDateTime = GetDayOfWeek(DateTime.Now.ToLocalTime().AddDays(-(numWeeks - 1) * 7), DayOfWeek.Sunday);
-                List<CommitData> commits = await _gitService.GetRecentCommits(_settingsModel.Username, startDateTime);
-                var weeks = CommitsToWeeks(commits, numWeeks);
-                System.Diagnostics.Debug.WriteLine("WEEKS SIZE: " + weeks.Count);
-                Weeks = weeks;
+            ErrorMsg = null;
+            IsAccessTokenError = false;
+            ShowRefresh = false;
+            if (_cancelSource != null)
+            {
+                _cancelSource.Cancel();
             }
+            _cancelSource = new CancellationTokenSource();
+            //Check that user set their access token
+            if (!String.IsNullOrEmpty(_settingsModel.AccessToken))
+            {
+                Loading = true;
+                try
+                {
+                    Weeks = await _GetData(_cancelSource.Token);
+                    Loading = false;
+                    ShowRefresh = true;
+                }
+                catch (TaskCanceledException e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Refresh cancelled");
+                }
+                catch (HttpRequestException e)
+                {
+                    if (e.Data.Contains("StatusCode") && (int)e.Data["StatusCode"] == 401)
+                    {
+                        ErrorMsg = "Invalid Access Token";
+                        IsAccessTokenError = true;
+                    } else
+                    {
+                        ErrorMsg = "Could not access GitHub";
+                        ShowRefresh = true;
+                    }
+                    Loading = false;
+                }
+            } else
+            {
+                ErrorMsg = "Please Provide An Access Token";
+                IsAccessTokenError = true;
+            }
+        }
+
+        private async Task<List<CommitWeek>> _GetData(CancellationToken ct)
+        {
+            string username = await _gitService.GetUsername(ct);
+            int numWeeks = (int)_settingsModel.NumWeeks;
+            DateTime startDateTime = GetDayOfWeek(DateTime.Now.ToLocalTime().AddDays(-(numWeeks - 1) * 7), DayOfWeek.Sunday);
+            List<CommitData> commits = await _gitService.GetRecentCommits(username, startDateTime, ct);
+            return CommitsToWeeks(commits, numWeeks);
         }
 
         private List<CommitWeek> CommitsToWeeks(List<CommitData> commits, int numWeeks)
@@ -172,6 +272,7 @@ namespace GitWitWpf.Models
             } else if (e.PropertyName == "AccessToken")
             {
                 _gitService.SetHttpClient(_settingsModel.AccessToken);
+                _ = Refresh();
             }
             //TODO: Handle only username change
         }

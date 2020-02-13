@@ -16,12 +16,12 @@
 			Width="20" Height="20" Background="#33000000" BorderThickness="0" 
 			Content="{StaticResource HelpImg}" Click="Help_Click" />
 		</StackPanel>
+		<TextBox Text="{Binding AccessToken,Mode=TwoWay}"></TextBox>
 		<Expander Foreground="White" Header="Scopes">
 			<StackPanel>
 				<TextBlock Foreground="White">The following scopes must be enabled:</TextBlock>
-				<Image Source="../Resources/scope.jpg"></Image>
+				<Image Source="../Resources/scopes.png"></Image>
 			</StackPanel>
 		</Expander>
-		<TextBox Text="{Binding AccessToken,Mode=TwoWay}"></TextBox>
 	</StackPanel>
 </UserControl>

@@ -29,9 +29,13 @@
 			SelectedValuePath="Value"
 			SelectedValue="{Binding NumWeeks, Mode=TwoWay}" />
 		<Button 
-				Background="#33000000" BorderThickness="1" 
-				Click="Exit_Click"
-				HorizontalAlignment="Center"
-				Content="Exit" />
+			Margin="2, 2, 2, 2"
+			Padding="2, 2, 2, 2"
+			FontSize="16"
+			Foreground="White"
+			Background="#66000000" BorderThickness="2" 
+			Click="Exit_Click"
+			HorizontalAlignment="Center"
+			Content="Exit" />
 	</StackPanel>
 </UserControl>

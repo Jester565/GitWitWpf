@@ -5,47 +5,68 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GitWitWpf.Controls"
              mc:Ignorable="d">
-	<StackPanel Orientation="Horizontal">
-		<ItemsControl 
-		ItemsSource="{Binding DowLabels, Mode=OneWay}"
-		Margin="5, 16, 5, 0">
-			<ItemsControl.ItemsPanel>
-				<ItemsPanelTemplate>
-					<StackPanel Orientation="Vertical"/>
-				</ItemsPanelTemplate>
-			</ItemsControl.ItemsPanel>
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<Border VerticalAlignment="Center" Height="30">
-						<TextBlock Text="{Binding}" Foreground="White" TextWrapping="Wrap" VerticalAlignment="Center"></TextBlock>
-					</Border>
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-		</ItemsControl>
-		<ItemsControl 
-		ItemsSource="{Binding Weeks, Mode=OneWay}">
-			<ItemsControl.ItemsPanel>
-				<ItemsPanelTemplate>
-					<StackPanel Orientation="Horizontal"/>
-				</ItemsPanelTemplate>
-			</ItemsControl.ItemsPanel>
-			<ItemsControl.ItemTemplate>
-				<DataTemplate>
-					<StackPanel
-					Orientation="Vertical"
-					Width="30">
-						<TextBlock Text="{Binding Label, Mode=OneWay}" Foreground="White" HorizontalAlignment="Center"></TextBlock>
-						<ItemsControl
-						ItemsSource="{Binding Days, Mode=OneWay}">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<local:CommitDayControl DataContext="{Binding}" />
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-					</StackPanel>
-				</DataTemplate>
-			</ItemsControl.ItemTemplate>
-		</ItemsControl>
+	<Control.Resources>
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+		<Image x:Key="RefreshImg" Source="../Resources/refresh.png" />
+	</Control.Resources>
+	<StackPanel>
+		<StackPanel Orientation="Horizontal">
+			<ItemsControl 
+			ItemsSource="{Binding DowLabels, Mode=OneWay}"
+			Margin="5, 16, 5, 0">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Vertical"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border VerticalAlignment="Center" Height="30">
+							<TextBlock Text="{Binding}" Foreground="White" TextWrapping="Wrap" VerticalAlignment="Center"></TextBlock>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+			<ItemsControl 
+			ItemsSource="{Binding Weeks, Mode=OneWay}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Horizontal"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<local:CommitWeekControl DataContext="{Binding}"/>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</StackPanel>
+		<Grid>
+			<ProgressBar  Visibility= "{Binding Loading, Converter={StaticResource BooleanToVisibilityConverter}}"
+									Width="150" Height="20"
+									Minimum="0" Maximum="100" IsIndeterminate="True"
+									HorizontalAlignment="Center" VerticalAlignment="Center" />
+			<TextBlock Text="{Binding ErrorMsg, Mode=OneWay}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+		</Grid>
+		<Grid Margin="0, 5, 0, 0">
+			<Button Visibility="{Binding IsAccessTokenError, Converter={StaticResource BooleanToVisibilityConverter}}"
+							Click="AccessToken_Click"
+							Content="Set Access Token"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center" 
+							Background="#66000000"
+							Foreground="White"
+							BorderThickness="1"
+							FontSize="14"
+							Padding="2, 2, 2, 2" />
+			<Button Visibility="{Binding ShowRefresh, Converter={StaticResource BooleanToVisibilityConverter}}" 
+							Click="Refresh_Click"
+							Content="{StaticResource RefreshImg}"
+							Width="30" Height="30"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center" 
+							Background="#33000000"
+							BorderThickness="0" />
+		</Grid>
 	</StackPanel>
 </UserControl>

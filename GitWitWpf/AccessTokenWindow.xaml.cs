@@ -8,26 +8,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GitWitWpf.Controls
+namespace GitWitWpf
 {
     /// <summary>
-    /// Interaction logic for AuthControl.xaml
+    /// Interaction logic for AccessTokenWindow.xaml
     /// </summary>
-    public partial class AuthControl : UserControl
+    public partial class AccessTokenWindow : Window
     {
-        public AuthControl()
+        public AccessTokenWindow()
         {
             InitializeComponent();
         }
 
-        private void Set_AccessToken(object sender, RoutedEventArgs e)
+        private void Close_Click(object sender, RoutedEventArgs e)
         {
-
+            this.Close();
         }
     }
-
-    
 }

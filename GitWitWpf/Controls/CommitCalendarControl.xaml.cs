@@ -24,5 +24,17 @@ namespace GitWitWpf.Controls
         {
             InitializeComponent();
         }
+
+        private void AccessToken_Click(object sender, RoutedEventArgs e)
+        {
+            AccessTokenWindow atWindow = new AccessTokenWindow();
+            atWindow.DataContext = ((CommitCalendarModel)DataContext).Settings;
+            atWindow.ShowDialog();
+        }
+
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            _ = ((CommitCalendarModel)DataContext).Refresh();
+        }
     }
 }

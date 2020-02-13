@@ -9,7 +9,9 @@
   <ItemGroup>
     <None Remove="Resources\c;pse.png" />
     <None Remove="Resources\help.png" />
+    <None Remove="Resources\refresh.png" />
     <None Remove="Resources\scope.jpg" />
+    <None Remove="Resources\scopes.png" />
     <None Remove="Resources\settings.png" />
   </ItemGroup>
 
@@ -22,7 +24,8 @@
   <ItemGroup>
     <Resource Include="Resources\close.png" />
     <Resource Include="Resources\help.png" />
-    <Resource Include="Resources\scope.jpg" />
+    <Resource Include="Resources\refresh.png" />
+    <Resource Include="Resources\scopes.png" />
     <Resource Include="Resources\settings.png" />
   </ItemGroup>
 

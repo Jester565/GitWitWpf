@@ -1,12 +1,12 @@
-﻿<Window x:Class="GitWitWpf.SettingsWindow"
+﻿<Window x:Class="GitWitWpf.AccessTokenWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GitWitWpf"
 				xmlns:controls="clr-namespace:GitWitWpf.Controls"
-				mc:Ignorable="d"
-        Title="SettingsWindow" Height="auto" Width="500"
+        mc:Ignorable="d"
+        Title="AccessTokenWindow" Height="500" Width="600" 
 				AllowsTransparency="True" WindowStyle="None" >
 	<Window.Background>
 		<SolidColorBrush Opacity="0.5" Color="Black"/>
@@ -23,11 +23,11 @@
 				HorizontalAlignment="Right"
 				VerticalAlignment="Top" />
 		</Grid>
-		<ScrollViewer Height="600">
+		<ScrollViewer Height="450">
 			<StackPanel>
-				<controls:SettingsControl Margin="10, 10, 10, 30" />
 				<controls:AccessTokenControl Margin="10, 0, 10, 0" />
 			</StackPanel>
 		</ScrollViewer>
 	</StackPanel>
 </Window>
+

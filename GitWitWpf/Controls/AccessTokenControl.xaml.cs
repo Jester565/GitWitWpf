@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,7 +29,58 @@ namespace GitWitWpf.Controls
 
         private void Help_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start(HELP_URL);
+            LaunchBrowser(HELP_URL);
+        }
+
+        private void LaunchBrowser(string url)
+        {
+            using (RegistryKey userChoiceKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice"))
+            {
+                if (userChoiceKey != null)
+                {
+                    object progIdValue = userChoiceKey.GetValue("Progid");
+                    string path = progIdValue + @"\shell\open\command";
+                    FileInfo browserPath;
+                    using (RegistryKey pathKey = Registry.ClassesRoot.OpenSubKey(path))
+                    {
+                        if (pathKey == null)
+                        {
+                            return;
+                        }
+
+                        // Trim parameters.
+                        try
+                        {
+                            path = pathKey.GetValue(null).ToString().ToLower().Replace("\"", "");
+                            if (!path.EndsWith(".exe"))
+                            {
+                                path = path.Substring(0, path.LastIndexOf(".exe", StringComparison.Ordinal) + ".exe".Length);
+                            }
+                            browserPath = new FileInfo(path);
+                            Process.Start(new ProcessStartInfo(browserPath.FullName, url));
+                        }
+                        catch
+                        {
+                            ShowNoBrowserWarning();
+                        }
+                    }
+                } else
+                {
+                    ShowNoBrowserWarning();
+                }
+            }
+        }
+
+        private void ShowNoBrowserWarning()
+        {
+            MessageBoxResult result = MessageBox.Show("We couldn't find your default browser. Would you like the link copied to your clipboard?",
+                                         "Confirmation",
+                                         MessageBoxButton.YesNo,
+                                         MessageBoxImage.Question);
+            if (result == MessageBoxResult.Yes)
+            {
+                Clipboard.SetText(HELP_URL);
+            }
         }
     }
 }
