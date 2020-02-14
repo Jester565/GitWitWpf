@@ -13,6 +13,10 @@ namespace GitWitWpf
     /// </summary>
     public partial class App : Application
     {
-
+        public App()
+        {
+            System.Diagnostics.Debug.WriteLine("Ran constructor");
+            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.BelowNormal;
+        }
     }
 }

@@ -53,6 +53,10 @@ namespace GitWitWpf
 
         protected override void OnSourceInitialized(EventArgs e)
         {
+            var hwndSource = PresentationSource.FromVisual(this) as HwndSource;
+
+            if (hwndSource != null)
+                hwndSource.CompositionTarget.RenderMode = RenderMode.SoftwareOnly;
             base.OnSourceInitialized(e);
             HwndSource source = PresentationSource.FromVisual(this) as HwndSource;
             source.AddHook(KeepWindowBack);

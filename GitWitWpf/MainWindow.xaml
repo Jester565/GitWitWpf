@@ -10,11 +10,9 @@
 				Height="{Binding CustomHeight, Mode=TwoWay}" 
 				Width="{Binding CustomWidth, Mode=TwoWay}" 
 				Left="0" Top="0"
-				AllowsTransparency="True" WindowStyle="None" Loaded="Window_Loaded"
-				ShowInTaskbar="False">
-	<Window.Background>
-		<SolidColorBrush Opacity="0.5" Color="Black"/>
-	</Window.Background>
+				WindowStyle="None" Loaded="Window_Loaded" ResizeMode="NoResize"
+				ShowInTaskbar="False"
+				Background="Black">
 	<Window.Resources>
 		<Image x:Key="SettingsImg" Source="Resources/settings.png"/>
 	</Window.Resources>
