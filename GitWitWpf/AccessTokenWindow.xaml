@@ -9,7 +9,7 @@
         Title="AccessTokenWindow" Height="500" Width="600" 
 				AllowsTransparency="True" WindowStyle="None" >
 	<Window.Background>
-		<SolidColorBrush Opacity="0.5" Color="Black"/>
+		<SolidColorBrush Opacity="0.9" Color="Black"/>
 	</Window.Background>
 	<Window.Resources>
 		<Image x:Key="CloseImg" Source="Resources/close.png"/>

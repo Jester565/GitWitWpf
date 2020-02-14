@@ -32,7 +32,8 @@ namespace GitWitWpf
         private static readonly uint WM_WINDOWPOSCHANGING = 0x0046;
         private static readonly uint SWP_NOZORDER = 0x0004;
         private static readonly int INIT_WIDTH = 200;
-        private static readonly int INIT_HEIGHT = 300;
+        private static readonly int INIT_HEIGHT = 275;
+        private static readonly int MIN_WIDTH = 140;
         private static readonly ScreenPosition DEFAULT_WINDOW_POSITION = ScreenPosition.TopRight;
         private SettingsModel _settingsModel;
         private CommitCalendarModel _commitCalendarModel;
@@ -61,6 +62,7 @@ namespace GitWitWpf
         {
             _settingsModel.PropertyChanged += this.OnSettingsChanged;
             await _settingsModel.Init();
+            CustomWidth = GetWindowWidth();
             SystemEvents.DisplaySettingsChanged += new
             EventHandler(this.OnDisplayChange);
             _commitCalendarModel.Init();
@@ -72,7 +74,20 @@ namespace GitWitWpf
             if (e.PropertyName == "WindowPosition")
             {
                 this.SetWindowPosition();
+            } else if (e.PropertyName == "NumWeeks")
+            {
+                CustomWidth = GetWindowWidth();
             }
+        }
+
+        private int GetWindowWidth()
+        {
+            int width = (int)(30 * _settingsModel.NumWeeks + 40);
+            if (width < MIN_WIDTH)
+            {
+                return MIN_WIDTH;
+            }
+            return width;
         }
 
         private int _customWidth = INIT_WIDTH;

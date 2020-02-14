@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:GitWitWpf"
 				xmlns:controls="clr-namespace:GitWitWpf.Controls"
 				mc:Ignorable="d"
-        Title="SettingsWindow" Height="auto" Width="500"
+        Title="SettingsWindow" Height="650" Width="500"
 				AllowsTransparency="True" WindowStyle="None" >
 	<Window.Background>
-		<SolidColorBrush Opacity="0.5" Color="Black"/>
+		<SolidColorBrush Opacity="0.9" Color="Black"/>
 	</Window.Background>
 	<Window.Resources>
 		<Image x:Key="CloseImg" Source="Resources/close.png"/>

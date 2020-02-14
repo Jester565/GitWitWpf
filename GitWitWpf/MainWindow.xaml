@@ -7,10 +7,11 @@
 				xmlns:controls="clr-namespace:GitWitWpf.Controls"
 				mc:Ignorable="d"
         Title="MainWindow" 
-				Height="{Binding CustomHeight, Mode=OneWay}" 
-				Width="{Binding CustomWidth, Mode=OneWay}" 
+				Height="{Binding CustomHeight, Mode=TwoWay}" 
+				Width="{Binding CustomWidth, Mode=TwoWay}" 
 				Left="0" Top="0"
-				AllowsTransparency="True" WindowStyle="None" Loaded="Window_Loaded">
+				AllowsTransparency="True" WindowStyle="None" Loaded="Window_Loaded"
+				ShowInTaskbar="False">
 	<Window.Background>
 		<SolidColorBrush Opacity="0.5" Color="Black"/>
 	</Window.Background>
@@ -19,6 +20,6 @@
 	</Window.Resources>
 	<Grid>
 		<Button HorizontalAlignment="Left" VerticalAlignment="Top" Content="{StaticResource SettingsImg}" Background="#33000000" Width="20" Height="20" BorderThickness="0" Click="Settings_Click" />
-		<controls:CommitCalendarControl DataContext="{Binding CommitCalendar}"></controls:CommitCalendarControl>
+		<controls:CommitCalendarControl DataContext="{Binding CommitCalendar}" HorizontalAlignment="Center"></controls:CommitCalendarControl>
 	</Grid>
 </Window>
