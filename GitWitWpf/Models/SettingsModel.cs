@@ -34,18 +34,34 @@ namespace GitWitWpf.Models
             { ScreenPosition.BottomRight, "Bottom Right" }
         };
 
+        private static Dictionary<string, int> _refreshIntervals = new Dictionary<string, int>
+        {
+            { "10 Minutes", 10 },
+            { "30 Minutes", 30 },
+            { "1 Hour", 60 },
+            { "2 Hours", 120 },
+            { "4 Hours", 240 },
+            { "6 Hours", 360 },
+            { "8 Hours", 480 },
+            { "12 Hours", 720 },
+            { "1 Day", 1440 },
+            { "Never", 0 }
+        };
+
         private class Settings
         {
             public ScreenPosition WindowPosition = DEFAULT_WINDOW_POSITION;
             public int NumWeeks = DEFAULT_NUM_WEEKS;
             public string Username = String.Empty;
             public string AccessToken = String.Empty;
+            public int RefreshInterval = DEFAULT_REFRESH_INTERVAL;
         }
 
         private Settings? _settings = null;
         private static readonly string SETTINGS_PATH = @".\settings.json";
         private static readonly ScreenPosition DEFAULT_WINDOW_POSITION = ScreenPosition.TopRight;
         private static readonly int DEFAULT_NUM_WEEKS = 4;
+        private static readonly int DEFAULT_REFRESH_INTERVAL = 60;
         private static int MAX_WEEKS = 10;
         private static int MIN_WEEKS = 1;
         public SettingsModel()
@@ -135,6 +151,30 @@ namespace GitWitWpf.Models
                     _settings.AccessToken = value;
                     OnPropertyChanged("AccessToken");
                     _ = WriteSettings();
+                }
+            }
+        }
+
+        public List<KeyValuePair<string, int>> AllRefreshIntervals
+        {
+            get
+            {
+                return _refreshIntervals.ToList();
+            }
+        }
+
+        public int RefreshInterval
+        {
+            get
+            {
+                return (_settings != null) ? _settings.RefreshInterval : DEFAULT_REFRESH_INTERVAL;
+            }
+            set
+            {
+                if (_settings != null && value != _settings.RefreshInterval)
+                {
+                    _settings.RefreshInterval = value;
+                    OnPropertyChanged("RefreshInterval");
                 }
             }
         }

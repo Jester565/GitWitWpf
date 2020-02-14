@@ -69,7 +69,6 @@ namespace GitWitWpf.Models
         private bool _isAccessTokenError = false;
         private CancellationTokenSource _cancelSource = null;
         //Refresh git calendar every 10 minutes
-        private const int DEFAULT_REFERSH_INTERVAL = 60 * 10;
         private System.Timers.Timer _pollTimer = new System.Timers.Timer();
         private static readonly List<string> DOW_LABELS = new List<string> { "U", "M", "T", "W", "R", "F", "S" };
         public CommitCalendarModel(SettingsModel settingsModel)
@@ -86,11 +85,9 @@ namespace GitWitWpf.Models
             {
                 _gitService.SetHttpClient(_settingsModel.AccessToken);
             }
-            _pollTimer.AutoReset = true;
             _pollTimer.Elapsed += new ElapsedEventHandler(this.OnPoll);
             _ = LoadPreviousData();
             _ = Refresh();
-            StartPolling();
         }
 
         public SettingsModel Settings
@@ -180,13 +177,20 @@ namespace GitWitWpf.Models
             await File.WriteAllTextAsync(PREV_DATA_PATH, weeksStr);
         }
 
-        public void StartPolling(int refreshInterval = DEFAULT_REFERSH_INTERVAL)
+        public void StartRefreshTimer()
         {
-            _pollTimer.Interval = 1000 * refreshInterval; // in miliseconds
-            _pollTimer.Start();
+            int refreshInterval = _settingsModel.RefreshInterval;
+            if (refreshInterval > 0)
+            {
+                int refreshMillis = refreshInterval * 60 * 1000;
+                var millisTillPoll = refreshMillis - (DateTime.Now.TimeOfDay.TotalMilliseconds % refreshMillis);
+                _pollTimer.Interval = millisTillPoll;
+                _pollTimer.Stop();
+                _pollTimer.Start();
+            }
         }
 
-        public void StopPolling()
+        public void StopRefreshTimer()
         {
             _pollTimer.Stop();
         }
@@ -234,6 +238,7 @@ namespace GitWitWpf.Models
                 ErrorMsg = "Please Provide An Access Token";
                 IsAccessTokenError = true;
             }
+            StartRefreshTimer();
         }
 
         private async Task<List<CommitWeek>> _GetData(CancellationToken ct)
@@ -293,6 +298,9 @@ namespace GitWitWpf.Models
             {
                 _gitService.SetHttpClient(_settingsModel.AccessToken);
                 _ = Refresh();
+            } else if (e.PropertyName == "RefreshInterval")
+            {
+                StartRefreshTimer();
             }
             //TODO: Handle only username change
         }

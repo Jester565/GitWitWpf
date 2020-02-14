@@ -28,6 +28,17 @@
 			DisplayMemberPath="Key"
 			SelectedValuePath="Value"
 			SelectedValue="{Binding NumWeeks, Mode=TwoWay}" />
+		<Label Margin="0"
+      Content="Refresh Interval"
+      Padding="5,5,5,1"
+			Foreground="White"
+      Target="{Binding ElementName=refreshIntervalComboBox}" />
+		<ComboBox 
+			Name="refreshIntervalComboBox"
+			ItemsSource="{Binding AllRefreshIntervals, Mode=OneWay}"
+			DisplayMemberPath="Key"
+			SelectedValuePath="Value"
+			SelectedValue="{Binding RefreshInterval, Mode=TwoWay}" />
 		<Button 
 			Margin="2, 2, 2, 2"
 			Padding="2, 2, 2, 2"
