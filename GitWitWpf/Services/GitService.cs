@@ -82,7 +82,19 @@ namespace GitWitWpf.Services
                 {
                     foreach (dynamic commit in evt.payload.commits)
                     {
-                        commits.Add(await GetCommit((string)evt.repo.url, (string)commit.sha, ct));
+                        try
+                        {
+                            CommitData commitData = await GetCommit((string)evt.repo.url, (string)commit.sha, ct);
+                            commits.Add(commitData);
+                        } catch (HttpRequestException ex)
+                        {
+                            Console.WriteLine("HTTP REQUEST FAILED " + ex);
+                            commits.Add(new CommitData {
+                                Author = commit.author.name,
+                                DateTime = DateTime.Parse((string)evt.created_at).ToLocalTime(),
+                                RepoUrl = evt.repo.url
+                            });
+                        }
                     }
                 }
             }
